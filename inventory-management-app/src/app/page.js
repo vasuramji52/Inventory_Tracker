@@ -32,6 +32,8 @@ const style = {
     const [inventory, setInventory] = useState([])
     const [open, setOpen] = useState(false)
     const [itemName, setItemName] = useState('')
+    const [searchItemName, setSearchItemName] = useState('')
+    const [searchResult, setSearchResult] = useState('')
 
     const updateInventory = async () => {
       const snapshot = query(collection(firestore, 'Pantry'))
@@ -73,6 +75,22 @@ const style = {
         }
       }
       await updateInventory()
+    }
+
+    const searchItem = async () => {
+      const item = searchItemName
+      const docRef = doc(collection(firestore, 'Pantry'), item)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        //logic for if item found
+        console.log("Item Found")
+        setSearchResult("Item Found")
+
+      } else {
+        //logic for if item not found
+        console.log("Item Not Found!")
+        setSearchResult("Item Not Found")
+      }
     }
     
     const handleOpen = () => setOpen(true)
@@ -120,6 +138,21 @@ const style = {
           </Stack>
         </Box>
       </Modal>
+
+      <TextField id="outlined-search" label="Search" type="search" 
+        value={searchItemName}
+        onChange={(e) => setSearchItemName(e.target.value)}>
+        Search
+      </TextField>
+
+      <Button variant="outlined" onClick={searchItem} >
+        Search
+      </Button>
+
+      <Typography>
+        {searchResult}
+      </Typography>
+
       <Button variant="contained" onClick={handleOpen}>
         Add New Item
       </Button>
